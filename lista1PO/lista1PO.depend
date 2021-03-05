@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1614750032 source:c:\users\jeferson\documents\projetosc\lista1po\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+
