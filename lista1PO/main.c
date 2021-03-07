@@ -4,7 +4,7 @@ Instruções:
 a. Atividade individual
 b. Enviar 2 arquivos (arquivo-fonte em C e uma planilha com a tabulação do tempo x algoritmo)
 
-Com base no exercício da "Lista 1" e os códigos disponibilizados no Moodle, você deve construir um programa que faça a mensuração do tempo para a ordenação de 500.000, 750.000 e 1.000.000 registros, utilizando os algoritmos Bubblesort e Insertsort
+Com base no exercício da "Lista 1" e os códigos disponibilizados no Moodle, você deve construir um programa que faça a mensuração do tempo para a ordenação de 500.000, 750.000 e 1.000.000 registros, utilizando os algoritmos Bubblesort, Insertsort, Selectionsort e Shellsort
 */
 
 /*
@@ -47,6 +47,8 @@ int menu_operacional(int tamanhoVet){
         printf("-----------------------------------------------------------\n");
         printf("1 - executar a ordenação do arquivo usando Bubble Sort-----\n");
         printf("2 - executar a ordenação do arquivo usando Insertion Sort--\n");
+        printf("3 - executar a ordenação do arquivo usando Selection Sort--\n");
+        printf("4 - executar a ordenação do arquivo usando Shell Sort--\n");
         printf("-----------------------------------------------------------\n");
         i=0;
         scanf("%i",&i);
@@ -95,6 +97,56 @@ int menu_operacional(int tamanhoVet){
                     case 3:{
                         int *vet = ler_arquivo(tamanhoVet, arquivoRanNome);
                         *vet = ordenar_insertion(tamanhoVet, vet);
+                        escrever_arquivo(vet, tamanhoVet, arquivoRanNome);
+                    break;
+                    }
+                }
+            break;
+            }
+            case 3:{
+                printf("\n1 - Arquivo Ordenado \n2 - Arquivo Invertido\n3 - Arquivo Randômico\n");
+                scanf("%i",&i);
+                switch(i){
+                    case 1:{
+                        int *vet = ler_arquivo(tamanhoVet, arquivoOrdNome);
+                        *vet = ordenar_selection(tamanhoVet, vet);
+                        escrever_arquivo(vet, tamanhoVet, arquivoOrdNome);
+                    break;
+                    }
+                    case 2:{
+                        int *vet = ler_arquivo(tamanhoVet, arquivoInvNome);
+                        *vet = ordenar_selection(tamanhoVet, vet);
+                        escrever_arquivo(vet, tamanhoVet, arquivoInvNome);
+                    break;
+                    }
+                    case 3:{
+                        int *vet = ler_arquivo(tamanhoVet, arquivoRanNome);
+                        *vet = ordenar_selection(tamanhoVet, vet);
+                        escrever_arquivo(vet, tamanhoVet, arquivoRanNome);
+                    break;
+                    }
+                }
+            break;
+            }
+            case 4:{
+                printf("\n1 - Arquivo Ordenado \n2 - Arquivo Invertido\n3 - Arquivo Randômico\n");
+                scanf("%i",&i);
+                switch(i){
+                    case 1:{
+                        int *vet = ler_arquivo(tamanhoVet, arquivoOrdNome);
+                        *vet = ordenar_shell(tamanhoVet, vet);
+                        escrever_arquivo(vet, tamanhoVet, arquivoOrdNome);
+                    break;
+                    }
+                    case 2:{
+                        int *vet = ler_arquivo(tamanhoVet, arquivoInvNome);
+                        *vet = ordenar_shell(tamanhoVet, vet);
+                        escrever_arquivo(vet, tamanhoVet, arquivoInvNome);
+                    break;
+                    }
+                    case 3:{
+                        int *vet = ler_arquivo(tamanhoVet, arquivoRanNome);
+                        *vet = ordenar_shell(tamanhoVet, vet);
                         escrever_arquivo(vet, tamanhoVet, arquivoRanNome);
                     break;
                     }
@@ -209,8 +261,8 @@ int ordenar_bubble(int tamanhoVet, int *vet){
 
     //---------------------------------------------
     Ticks[1] = clock();
-    double Tempo = (Ticks[1] - Ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
-    printf("Tempo: %d ms \n", Tempo);
+    double Tempo = (double)(Ticks[1] - Ticks[0]) / CLOCKS_PER_SEC;
+    printf("Tempo: %.2f  \n", Tempo);
 
     return *vet;
 }
@@ -239,9 +291,79 @@ int ordenar_insertion(int tamanhoVet, int *vet){
 
     //---------------------------------------------
     Ticks[1] = clock();
-    double Tempo = (Ticks[1] - Ticks[0]) * 1000.0 / CLOCKS_PER_SEC;
-    printf("Tempo: %d ms \n", Tempo);
+    double Tempo = (double)(Ticks[1] - Ticks[0]) / CLOCKS_PER_SEC;
+    printf("Tempo: %.2f \n", Tempo);
 
     return *vet;
+}
+
+int ordenar_selection(int tamanhoVet, int *vet){
+
+    int i, j, min, aux;
+
+    //------------------ Marcação de tempo ---------
+    clock_t Ticks[2];
+    Ticks[0] = clock();
+    //---------------------------
+
+
+    //------------------ Selection Sort -----------
+    for (i = 0; i < (tamanhoVet-1); i++){
+
+     min = i;
+
+        for (j = (i+1); j < tamanhoVet; j++) {
+            if(vet[j] < vet[min])
+            min = j;
+        }
+
+        if (i != min) {
+            aux = vet[i];
+            vet[i] = vet[min];
+            vet[min] = aux;
+        }
+    }
+
+    //---------------------------------------------
+    Ticks[1] = clock();
+    double Tempo = (double)(Ticks[1] - Ticks[0]) / CLOCKS_PER_SEC;
+    printf("Tempo: %.2f \n", Tempo);
+
+    return *vet;
+}
+
+int ordenar_shell(int tamanhoVet, int *vet){
+
+    int i, j, value;
+
+    //------------------ Marcação de tempo ---------
+    clock_t Ticks[2];
+    Ticks[0] = clock();
+    //---------------------------
+
+    int h = 1;
+    while(h < tamanhoVet) {
+        h = 3*h+1;
+    }
+    while (h > 0) {
+        for(i = h; i < tamanhoVet; i++) {
+            value = vet[i];
+            j = i;
+            while (j > h-1 && value <= vet[j - h]) {
+                vet[j] = vet[j - h];
+                j = j - h;
+            }
+            vet[j] = value;
+        }
+        h = h/3;
+    }
+
+    //---------------------------------------------
+    Ticks[1] = clock();
+    double Tempo = (double)(Ticks[1] - Ticks[0]) / CLOCKS_PER_SEC;
+    printf("Tempo: %.2f \n", Tempo);
+
+    return *vet;
+
 }
 
